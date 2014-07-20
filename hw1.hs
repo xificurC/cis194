@@ -6,13 +6,16 @@ toDigitsRev x | x <= 0 = []
 
 toDigits :: Integer -> [Integer]
 toDigits x = reverse (toDigitsRev x)
+             
+-- or
+-- toDigits x = map digitToInt $ show x
 
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther x = fst (foldr step ([], False) x)
     where step val (acc, now) = ((if now then 2*val else val) : acc, not now)
 
 sumDigits :: [Integer] -> Integer
-sumDigits x = sum $ concat $ map toDigits x
+sumDigits x = sum $ concatMap toDigits x
 
 validate :: Integer -> Bool
 validate x = num `mod` 10 == 0
@@ -23,7 +26,7 @@ validate x = num `mod` 10 == 0
 
 type Peg = String
 type Move = (Peg, Peg)
-hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 
-move 1 from to _ = [(from,to)]
-move x from to temp = (move (x-1) from temp to) ++ [(from,to)] ++ (move (x-1) temp to from)
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi x _ _ _ | x < 1 = []
+hanoi x from to temp = (hanoi (x-1) from temp to) ++ ((from,to) : (hanoi (x-1) temp to from))
