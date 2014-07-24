@@ -1,7 +1,7 @@
 module Golf where
 
 import Data.List
-import qualified Data.Map.Lazy as M
+import qualified Data.Map.Strict as M
 import Data.Char (intToDigit)
     
 -- 1. skips
