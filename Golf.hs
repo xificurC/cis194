@@ -7,9 +7,10 @@ import Data.Char (intToDigit)
 -- 1. skips
 
 -- takeNth - given a list and an Int returns evey nth element (one-based)
-takeNth :: [a] -> Int -> [a]
-takeNth lst x = reverse $ fst $ foldl' step ([],1) lst
-    where step (acc,i) val = if i == x then (val:acc,1) else (acc,i+1)
+takeNth :: Int -> [a] -> [a]
+takeNth i a = case drop (i-1) a of
+                [] -> []
+                (x:xs) -> x : takeNth i xs
 
 -- skips - given a list returns a list of lists 
 -- that contain every [1..n]th element of the inital list
