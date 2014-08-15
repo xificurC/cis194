@@ -38,9 +38,6 @@ tag (Append m _ _) = m
 tagSize :: (Sized b, Monoid b) => JoinList b a -> Int
 tagSize = getSize . size . tag
           
-jl = Append (Size 4) (Append (Size 3) (Single (Size 1) 'y') (Append (Size 2) (Single (Size 1) 'e') (Single (Size 1) 'a')))
-     (Single (Size 1) 'h')
-
 indexJ :: (Sized b, Monoid b) =>
           Int -> JoinList b a -> Maybe a
 indexJ _ Empty = Nothing
@@ -80,11 +77,6 @@ _ !!? i | i < 0 = Nothing
 (x:xs) !!? 0 = Just x
 (x:xs) !!? i = xs !!? (i-1)
 
-jlToList :: JoinList m a -> [a]
-jlToList Empty = []
-jlToList (Single _ a) = [a]
-jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2
-
 scoreLine :: String -> JoinList Score String
 scoreLine s = Single (scoreString s) s
 
@@ -95,8 +87,6 @@ instance Buffer (JoinList (Score, Size) String) where
                  Empty)
                  . lines
     line n j = indexJ n j
---         | tagSize j <= n = Nothing
---         | otherwise = Just (let (Single _ x) = indexJ n j in x)
     replaceLine n s j
                     | tagSize j <= n = j
                     | otherwise = takeJ (n-1) j
