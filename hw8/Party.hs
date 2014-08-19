@@ -3,7 +3,6 @@ module Party where
 import Employee
 import Data.Monoid
 import Data.Tree
-import Text.Read (readMaybe)
 import Data.List (sortBy)
 import Data.Ord (comparing)
     
