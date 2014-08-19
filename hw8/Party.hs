@@ -37,11 +37,8 @@ maxFun :: Tree Employee -> GuestList
 maxFun t = moreFun g1 g2
     where (g1,g2) = treeFold foldForFun t
                     
-sortEmployeeList :: [Employee] -> [Employee]
-sortEmployeeList = sortBy (comparing empName)
-                   
 listEmployeesSorted :: [Employee] -> String
-listEmployeesSorted = unlines . (map empName) . sortEmployeeList
+listEmployeesSorted = unlines . (map empName) . sortBy (comparing empName)
                     
 reportGuestList :: GuestList -> String
 reportGuestList (GL l f) = "Total fun: " ++ show f ++ "\n" ++ listEmployeesSorted l
