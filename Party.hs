@@ -4,6 +4,8 @@ import Employee
 import Data.Monoid
 import Data.Tree
 import Text.Read (readMaybe)
+import Data.List (sortBy)
+import Data.Ord (comparing)
     
 glCons :: Employee -> GuestList -> GuestList
 glCons emp@(Emp _ fun) (GL emps funs) = GL (emp:emps) (fun+funs)
@@ -35,10 +37,19 @@ foldForFun emp glt = nextLevel emp [glt]
 maxFun :: Tree Employee -> GuestList
 maxFun t = moreFun g1 g2
     where (g1,g2) = treeFold foldForFun t
+                    
+sortEmployeeList :: [Employee] -> [Employee]
+sortEmployeeList = sortBy (comparing empName)
+                   
+listEmployeesSorted :: [Employee] -> String
+listEmployeesSorted = unlines . (map empName) . sortEmployeeList
+                    
+reportGuestList :: GuestList -> String
+reportGuestList (GL l f) = "Total fun: " ++ show f ++ "\n" ++ listEmployeesSorted l
 
 main :: IO ()
 main = do
   s <- readFile "company.txt"
   let t :: Tree Employee
       t = read s
-  putStrLn (show t)
+  putStr . reportGuestList . maxFun $ t
