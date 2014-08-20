@@ -13,9 +13,11 @@ import Control.Applicative
 
 zeroOrMore :: Parser a -> Parser [a]
 zeroOrMore p = undefined
+               
+                 
 
 oneOrMore :: Parser a -> Parser [a]
-oneOrMore p = undefined
+oneOrMore p = liftA2 (:) p (zeroOrMore p)
 
 ------------------------------------------------------------
 --  2. Utilities
