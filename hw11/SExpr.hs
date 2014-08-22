@@ -51,20 +51,14 @@ data SExpr = A Atom
            | Comb [SExpr]
   deriving Show
 
-getIdent :: Parser Ident
-getIdent = ident
+parseIdent :: Parser Ident
+parseIdent = ident
 
-getN :: Parser Atom
-getN = N <$> posInt
+parseAtom :: Parser Atom
+parseAtom = N <$> posInt <|> I <$> parseIdent
 
-getI :: Parser Atom
-getI = I <$> getIdent
-       
-getAtom :: Parser Atom
-getAtom = getN <|> getI
-
-getA :: Parser SExpr
-getA = A <$> getAtom
-
--- getComb :: Parser SExpr
--- getComb = Comb <$> (char '(' *> getComb <* char ')')
+parseSExpr :: Parser SExpr
+parseSExpr = A <$> (spaces *> parseAtom <* spaces)
+           <|> Comb <$> 
+               (spaces *> char '(' *> (oneOrMore parseSExpr) 
+                <* spaces <* char ')')
