@@ -15,13 +15,16 @@ doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther x = fst (foldr step ([], False) x)
     where step val (acc, now) = ((if now then 2*val else val) : acc, not now)
 
+-- or
+-- doubleEveryOther = reverse . doubleEverySecond . reverse
+--     where doubleEverySecond = zipWith ($) (cycle [id,(2*)])
+
 sumDigits :: [Integer] -> Integer
-sumDigits x = sum $ concatMap toDigits x
+sumDigits = sum . concatMap toDigits
 
 validate :: Integer -> Bool
 validate x = num `mod` 10 == 0
-    where num = sumDigits $ doubleEveryOther $ toDigits x
-
+    where num = sumDigits . doubleEveryOther . toDigits $ x
 
 -- Part 2 - towers of hanoi
 
