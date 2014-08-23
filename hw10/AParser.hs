@@ -62,7 +62,7 @@ first :: (a -> b) -> (a,c) -> (b,c)
 first f (a,c) = (f a, c)
 
 instance Functor Parser where
-    fmap f (Parser p) = Parser (fmap (first f) . p)
+    fmap f (Parser p) = Parser $ fmap (first f) . p
 
 instance Applicative Parser where
     pure x = Parser (\s -> Just (x,s))
