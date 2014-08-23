@@ -33,9 +33,10 @@ nextLeaf (Node _ left _ right) = minimumBy (comparing length) [DLeft : (nextLeaf
                                  
 nextTree :: a -> Tree a -> [Direction] -> Tree a
 nextTree x _ [] = Node 0 Leaf x Leaf
-nextTree x (Node h left v right) dir@(d:ds) = case d of
-                                                DLeft -> Node newH (nextTree x left ds) v right
-                                                DRight -> Node newH left v (nextTree x right ds)
+nextTree x (Node h left v right) dir@(d:ds) =
+    case d of
+      DLeft -> Node newH (nextTree x left ds) v right
+      DRight -> Node newH left v (nextTree x right ds)
     where newH = h + (if length dir > (fromInteger h) then 1 else 0)
 
 -- more folds
@@ -45,7 +46,7 @@ xor :: [Bool] -> Bool
 xor = odd . foldr (\x n -> if x == True then n+1 else n) 0
 
 map' :: (a -> b) -> [a] -> [b]
-map' f = foldr (\val acc -> f val : acc) []
+map' f = foldr ((:) . f) []
 
 -- finding primes
 
