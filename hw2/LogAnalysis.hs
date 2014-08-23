@@ -26,7 +26,7 @@ parseMessage message = let (f:s:t:rest) = (words message)
                            logMsg _ _ _ _ = Unknown message
 
 parse :: String -> [LogMessage]
-parse stuff = map parseMessage $ lines stuff
+parse = map parseMessage . lines
               
 isLeaf :: MessageTree -> Bool
 isLeaf Leaf = True
@@ -45,14 +45,14 @@ insert theMessage@(LogMessage _ stamp _) (Node leftTree val@(LogMessage _ stamp2
          else Node leftTree val (insert theMessage rightTree)
 
 build :: [LogMessage] -> MessageTree
-build messageList = foldr insert Leaf messageList
+build = foldr insert Leaf
 
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node leftTree message rightTree) = inOrder leftTree ++ message : inOrder rightTree
                                        
 whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong logList = map getString $ filter errorOver50 $ inOrder $ build logList
+whatWentWrong = map getString . filter errorOver50 . inOrder . build
     where errorOver50 :: LogMessage -> Bool
           errorOver50 (LogMessage (Error sev) _ _) | sev >= 50 = True
           errorOver50 _ = False
