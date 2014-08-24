@@ -29,21 +29,24 @@ die = getRandom
 type Army = Int
 
 data Battlefield = Battlefield { attackers :: Army, defenders :: Army }
+                 deriving (Show)
 
 battle :: Battlefield -> Rand StdGen Battlefield
 battle bf = let attackWith = min 3 (attackers bf - 1)
                 defendWith = min 2 (defenders bf)
-                getDie x = liftM (sortBy $ flip compare) replicateM x die
+                getDie x = liftM (sortBy $ flip compare) (replicateM x die)
                 attackDie = getDie attackWith
                 defendDie = getDie defendWith
-                go :: Army
-                   -> Army
-                   -> Rand StdGen [DieValue]
-                   -> Rand StdGen [DieValue]
-                   -> Rand StdGen Battlefield
-                go a d (Rand StdGen []) _ = Battlefield a d
-                go a d _ (Rand StdGen []) = Battlefield a d
+                go a d [] _ = Battlefield a d
+                go a d _ [] = Battlefield a d
                 go a d (a1:as) (d1:ds)
-                   | a1 > d1 = go a (d-1) as ds
-                   | otherwise = go (a-1) d as ds
-            in go attackWith defendWith attackDie defendDie
+                    | a1 > d1 = go a (d-1) as ds
+                    | otherwise = go (a-1) d as ds
+            in liftM2 (go (attackers bf) (defenders bf)) attackDie defendDie
+               
+invade :: Battlefield -> Rand StdGen Battlefield
+invade bf = battle bf >>= \r ->
+            case r of
+              (Battlefield 1 _) -> return r
+              (Battlefield _ 0) -> return r
+              _ -> invade r
