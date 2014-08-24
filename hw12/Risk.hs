@@ -51,6 +51,5 @@ invade bf = battle bf >>= \r ->
               _ -> invade r
 
 successProb :: Battlefield -> Rand StdGen Double
-successProb bf = replicateM 1000 (invade bf) >>= \l ->
-                 return $
-                 (/1000) . fromIntegral . length . filter ((>1) . attackers) $ l
+successProb bf = getNumber `fmap` replicateM 1000 (invade bf)
+    where getNumber = (/1000) . fromIntegral . length . filter ((>1) . attackers)
