@@ -5,7 +5,6 @@ module Risk where
 import Control.Monad.Random
 import Control.Monad
 import Data.List (sortBy)
-import System.Random
 
 ------------------------------------------------------------
 -- Die values
@@ -50,3 +49,8 @@ invade bf = battle bf >>= \r ->
               (Battlefield 1 _) -> return r
               (Battlefield _ 0) -> return r
               _ -> invade r
+
+successProb :: Battlefield -> Rand StdGen Double
+successProb bf = replicateM 1000 (invade bf) >>= \l ->
+                 return $
+                 (/1000) . fromIntegral . length . filter ((>1) . attackers) $ l
